@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jugendclub Kirchen-Hausen</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #242424;
+    --border: #333;
+    --accent: #f5c518;
+    --text: #f0f0f0;
+    --muted: #888;
+    --green: #4caf50;
+    --red: #e53935;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    padding: 20px 16px 60px;
+  }
+
+  header {
+    text-align: center;
+    padding: 32px 0 28px;
+    position: relative;
+  }
+
+  header::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background: var(--accent);
+    margin: 14px auto 0;
+    border-radius: 2px;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.4rem, 8vw, 4.2rem);
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    text-shadow: 0 0 40px rgba(245,197,24,0.25);
+    line-height: 1;
+  }
+
+  h1 span { color: #fff; }
+
+  .status-bar {
+    text-align: center;
+    margin-bottom: 16px;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    background: var(--muted);
+    vertical-align: middle;
+  }
+
+  .status-dot.online { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .status-dot.offline { background: var(--red); }
+
+  .status-text { color: var(--muted); vertical-align: middle; }
+
+  .summary-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    margin: 0 auto 28px;
+    max-width: 900px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .summary-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+
+  .summary-stats { display: flex; gap: 20px; flex-wrap: wrap; }
+  .stat { text-align: center; }
+
+  .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .reset-btn {
+    background: transparent;
+    border: 1px solid var(--red);
+    color: var(--red);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 7px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .reset-btn:hover { background: var(--red); color: #fff; }
+
+  .table-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    overflow-x: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+  }
+
+  thead tr {
+    background: var(--surface2);
+    border-bottom: 2px solid var(--accent);
+  }
+
+  thead th {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    padding: 13px 10px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  thead th:first-child {
+    text-align: left;
+    padding-left: 18px;
+    width: 160px;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    transition: background 0.12s;
+  }
+
+  tbody tr:nth-child(even) { background: #1e1e1e; }
+  tbody tr:hover { background: #262626; }
+  tbody tr:last-child { border-bottom: none; }
+
+  td {
+    padding: 10px 8px;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  td:first-child {
+    text-align: left;
+    padding-left: 18px;
+  }
+
+  .drink-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #fff;
+  }
+
+  .counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .counter-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.08s;
+    flex-shrink: 0;
+  }
+
+  .counter-btn:active { transform: scale(0.88); }
+
+  .counter-btn.minus {
+    background: #2a1515;
+    color: var(--red);
+    border: 1px solid var(--red);
+  }
+
+  .counter-btn.minus:hover { background: var(--red); color: #fff; }
+
+  .counter-btn.plus {
+    background: #152a15;
+    color: var(--green);
+    border: 1px solid var(--green);
+  }
+
+  .counter-btn.plus:hover { background: var(--green); color: #fff; }
+
+  .counter-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    min-width: 26px;
+    color: #fff;
+    text-align: center;
+    transition: color 0.15s;
+  }
+
+  .counter-val.active { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Jugendclub <span>Kirchen-Hausen</span></h1>
+</header>
+
+<div class="status-bar">
+  <span class="status-dot" id="status-dot"></span>
+  <span class="status-text" id="status-text">Verbinde...</span>
+</div>
+
+<div class="summary-bar">
+  <div class="summary-title">Übersicht</div>
+  <div class="summary-stats">
+    <div class="stat">
+      <div class="stat-val" id="total-kasten">0</div>
+      <div class="stat-label">Kasten</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="total-halb">0</div>
+      <div class="stat-label">½ Kasten</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="total-drittel">0</div>
+      <div class="stat-label">⅓ Kasten</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="total-einzel">0</div>
+      <div class="stat-label">Einzeln</div>
+    </div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Alles zurücksetzen</button>
+</div>
+
+<div class="table-wrap">
+  <table id="drinks-table">
+    <thead>
+      <tr>
+        <th>Getränk</th>
+        <th>Kasten</th>
+        <th>½ Kasten</th>
+        <th>⅓ Kasten</th>
+        <th>Einzeln</th>
+      </tr>
+    </thead>
+    <tbody id="drinks-body"></tbody>
+  </table>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue, runTransaction, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBipEV1eyO0VsBoAvHg9WoQpBNyX8JToLc",
+  authDomain: "jugendclublager.firebaseapp.com",
+  databaseURL: "https://jugendclublager-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "jugendclublager",
+  storageBucket: "jugendclublager.firebasestorage.app",
+  messagingSenderId: "665255918891",
+  appId: "1:665255918891:web:4058d33f2a1882a7bf596e",
+  measurementId: "G-THYB7W3FM4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const drinks = [
+  "Bier Groß","Bier Klein","Corona","Radler","Fanta","Spezi","Cola",
+  "Apfelschorle","Wasser","Süßer Sprudel","Saurer Sprudel","Asbach","Wodka","Klopfer","Pfeffi"
+];
+
+const types = ['kasten', 'halb', 'drittel', 'einzel'];
+
+function slugify(str) { return str.toLowerCase().replace(/[^a-z0-9]/g, '_'); }
+
+// Build table
+function buildTable() {
+  const tbody = document.getElementById('drinks-body');
+  tbody.innerHTML = '';
+  drinks.forEach(drink => {
+    const tr = document.createElement('tr');
+    const nameTd = document.createElement('td');
+    nameTd.innerHTML = `<span class="drink-name">${drink}</span>`;
+    tr.appendChild(nameTd);
+    types.forEach(type => {
+      const td = document.createElement('td');
+      td.innerHTML = `
+        <div class="counter">
+          <button class="counter-btn minus" data-drink="${drink}" data-type="${type}" data-delta="-1">−</button>
+          <span class="counter-val" id="val-${slugify(drink)}-${type}">0</span>
+          <button class="counter-btn plus" data-drink="${drink}" data-type="${type}" data-delta="1">+</button>
+        </div>`;
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+
+  // Event delegation
+  document.getElementById('drinks-body').addEventListener('click', e => {
+    const btn = e.target.closest('.counter-btn');
+    if (!btn) return;
+    const drink = btn.dataset.drink;
+    const type = btn.dataset.type;
+    const delta = parseInt(btn.dataset.delta);
+    const path = `getraenke/${slugify(drink)}/${type}`;
+    runTransaction(ref(db, path), current => {
+      return Math.max(0, (current || 0) + delta);
+    });
+  });
+}
+
+// Listen for realtime updates
+function listenToData() {
+  onValue(ref(db, 'getraenke'), snapshot => {
+    const data = snapshot.val() || {};
+    let totals = { kasten: 0, halb: 0, drittel: 0, einzel: 0 };
+
+    drinks.forEach(drink => {
+      const slug = slugify(drink);
+      types.forEach(type => {
+        const val = (data[slug] && data[slug][type]) ? data[slug][type] : 0;
+        const el = document.getElementById(`val-${slug}-${type}`);
+        if (el) {
+          el.textContent = val;
+          el.classList.toggle('active', val > 0);
+        }
+        totals[type] += val;
+      });
+    });
+
+    document.getElementById('total-kasten').textContent = totals.kasten;
+    document.getElementById('total-halb').textContent = totals.halb;
+    document.getElementById('total-drittel').textContent = totals.drittel;
+    document.getElementById('total-einzel').textContent = totals.einzel;
+
+    // Online indicator
+    document.getElementById('status-dot').className = 'status-dot online';
+    document.getElementById('status-text').textContent = 'Verbunden – Echtzeit-Sync aktiv';
+  }, error => {
+    document.getElementById('status-dot').className = 'status-dot offline';
+    document.getElementById('status-text').textContent = 'Verbindung getrennt';
+  });
+}
+
+window.resetAll = function() {
+  if (!confirm('Wirklich alle Werte zurücksetzen?')) return;
+  const updates = {};
+  drinks.forEach(drink => {
+    types.forEach(type => {
+      updates[`getraenke/${slugify(drink)}/${type}`] = 0;
+    });
+  });
+  set(ref(db, 'getraenke'), Object.fromEntries(
+    drinks.map(d => [slugify(d), Object.fromEntries(types.map(t => [t, 0]))])
+  ));
+};
+
+buildTable();
+listenToData();
+</script>
+</body>
+</html>
